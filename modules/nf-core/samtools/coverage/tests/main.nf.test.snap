@@ -1,0 +1,131 @@
+{
+    "test_samtools_coverage_stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        "SAMTOOLS_COVERAGE",
+                        "samtools",
+                        "1.22.1"
+                    ]
+                ],
+                "coverage": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions_samtools": [
+                    [
+                        "SAMTOOLS_COVERAGE",
+                        "samtools",
+                        "1.22.1"
+                    ]
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
+        },
+        "timestamp": "2026-01-22T10:43:34.392105918"
+    },
+    "test_samtools_coverage_bam": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.txt:md5,99a521b3bf53b6acf8055a44a571ea84"
+                    ]
+                ],
+                "1": [
+                    [
+                        "SAMTOOLS_COVERAGE",
+                        "samtools",
+                        "1.22.1"
+                    ]
+                ],
+                "coverage": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.txt:md5,99a521b3bf53b6acf8055a44a571ea84"
+                    ]
+                ],
+                "versions_samtools": [
+                    [
+                        "SAMTOOLS_COVERAGE",
+                        "samtools",
+                        "1.22.1"
+                    ]
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
+        },
+        "timestamp": "2026-01-22T10:43:08.216921812"
+    },
+    "test_samtools_coverage_cram": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.txt:md5,ce896534bac51cfcc97e5508ae907e99"
+                    ]
+                ],
+                "1": [
+                    [
+                        "SAMTOOLS_COVERAGE",
+                        "samtools",
+                        "1.22.1"
+                    ]
+                ],
+                "coverage": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.txt:md5,ce896534bac51cfcc97e5508ae907e99"
+                    ]
+                ],
+                "versions_samtools": [
+                    [
+                        "SAMTOOLS_COVERAGE",
+                        "samtools",
+                        "1.22.1"
+                    ]
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
+        },
+        "timestamp": "2026-01-22T10:43:15.389524183"
+    }
+}
