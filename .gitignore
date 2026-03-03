@@ -1,7 +1,7 @@
 .nextflow*
 work/
 data/
-results/
+results*
 .DS_Store
 testing/
 testing*
@@ -9,3 +9,5 @@ testing*
 null/
 assets/?RR*
 assets/GRCh*
+assets/viruses.fasta
+assets/star_index*
