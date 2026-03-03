@@ -22,8 +22,8 @@ process MKSUMMARYVIRUSCOUNT {
     // TODO nf-core: See section in main README for further information regarding finding and adding container addresses to the section below.
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'oras://community.wave.seqera.io/library/pandas:1.0.1--fc2183e57d9aef1a':
-        'community.wave.seqera.io/library/pandas:1.0.1--ef651e0a14aeba7b' }"
+        'oras://community.wave.seqera.io/library/pandas:1.1.0--c54537636c507e8b':
+        'community.wave.seqera.io/library/pandas:1.1.0--c54537636c507e8b' }"
 
     input:// TODO nf-core: Where applicable all sample-specific information e.g. "id", "single_end", "read_group"
     //               MUST be provided as an input via a Groovy Map called "meta".
@@ -31,7 +31,8 @@ process MKSUMMARYVIRUSCOUNT {
     //               https://github.com/nf-core/modules/blob/master/modules/nf-core/bwa/index/main.nf
     // TODO nf-core: Where applicable please provide/convert compressed files as input/output
     //               e.g. "*.fastq.gz" and NOT "*.fastq", "*.bam" and NOT "*.sam" etc.
-    tuple val(meta), path(input_STARLog), path(input_virus_cov)
+    tuple val(meta), path(input_STARLog)
+    tuple val(meta2), path(input_virus_cov)
 
     output:
     // TODO nf-core: Named file extensions MUST be emitted for ALL output channels

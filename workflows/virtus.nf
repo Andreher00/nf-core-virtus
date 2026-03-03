@@ -15,6 +15,7 @@ include { STAR_GENOMEGENERATE as STAR_GENOMEGENERATE_VIRUS } from '../modules/nf
 include { SAMTOOLS_VIEW           } from '../modules/nf-core/samtools/view/main'
 include { FASTP                   } from '../modules/nf-core/fastp/main'
 include { STAR_ALIGN as STAR_ALIGN_HUMAN } from '../modules/nf-core/star/align/main'
+include { STAR_ALIGN as STAR_ALIGN_VIRUS } from '../modules/nf-core/star/align/main'
 include { SALMON_QUANT            } from '../modules/nf-core/salmon/quant/main'
 include { SAMTOOLS_COLLATEFASTQ   } from '../modules/nf-core/samtools/collatefastq/main'
 include { SAMTOOLS_FASTQ          } from '../modules/nf-core/samtools/fastq/main'
@@ -43,8 +44,9 @@ workflow VIRTUS {
 
 
     ch_fasta_human      = params.fasta_human ? channel.value( [ [:], file(params.fasta_human) ] ) : channel.value( [ [:], [] ] )
-    ch_gtf        = params.gtf ? channel.value( [ [:], file(params.gtf) ] ) : channel.value( [ [:], [] ] )
+    ch_gtf              = params.gtf ? channel.value( [ [:], file(params.gtf) ] ) : channel.value( [ [:], [] ] )
 
+    ch_fasta_virus      = params.fasta_virus ? channel.value( [ [:], file(params.fasta_virus) ] ) : channel.value( [ [:], [] ] )
 
 
     // Human STAR index
@@ -64,6 +66,22 @@ workflow VIRTUS {
         error "ERROR: Please provide either --star_index_human or --fasta_human"
     } 
 
+    // Virus STAR index
+    if (params.star_index_virus && file(params.star_index_virus).exists()) {
+        // Use pre-built index
+        ch_star_index_virus = channel.value([ [:], file(params.star_index_virus) ] )
+    } else if (params.fasta_virus) {
+        if (params.star_index_virus) {
+            log.warn "WARNING: Provided STAR index not found at: ${params.star_index_virus}"
+            log.warn "Generating STAR index from FASTA instead..."
+        }
+        // Generate index from FASTA
+        STAR_GENOMEGENERATE_VIRUS(ch_fasta_virus, channel.value([[:], []])) // No GTF for virus
+        ch_star_index_virus = STAR_GENOMEGENERATE_VIRUS.out.index
+        ch_versions = ch_versions.mix(STAR_GENOMEGENERATE_VIRUS.out.versions.first())
+    } else {
+        error "ERROR: Please provide either --star_index_virus or --fasta_virus"
+    }
 
 
     //
@@ -143,6 +161,7 @@ workflow VIRTUS {
     // Split PE reads for kz
     ch_split_reads = SAMTOOLS_COLLATEFASTQ.out.fastq
         .transpose()
+    ch_versions = ch_versions.mix(SAMTOOLS_COLLATEFASTQ.out.versions.first())
     
     // KZ FILTER PE READS
     KZFILTER_PE(
@@ -162,18 +181,46 @@ workflow VIRTUS {
     KZFILTER_SE(
         SAMTOOLS_FASTQ.out.singleton
     )
-    ch_versions = ch_versions.mix(KZFILTER_SE.out.versions_kz.first())
 
     // Format SE channel correctly for remixing
     ch_se_filtered = KZFILTER_SE.out.output_fq
         .map { meta, read -> [meta, [read]]}
 
     // We mix the results back together so downstream tools don't care about the split
-    ch_fastq_for_polyx = channel.empty()
+    ch_fastq_for_star_virus = channel.empty()
         .mix(FASTQPAIR.out.reads)
         .mix(ch_se_filtered)
-        .view()
 
+    // STAR MAPPING TO VIRUS
+    STAR_ALIGN_VIRUS(
+        ch_fastq_for_star_virus,      // Input reads
+        ch_star_index_virus,      // STAR index 
+        [[:], []],                         // No GTF for virus mapping
+        params.star_ignore_sjdbgtf,
+        params.seq_platform,
+        params.seq_center
+    )
+    ch_multiqc_files = ch_multiqc_files.mix(STAR_ALIGN_VIRUS.out.log_final.collect{item -> item[1]})
+    ch_versions = ch_versions.mix(STAR_ALIGN_VIRUS.out.versions.first())
+
+    BAMFILTERPOLYX(
+        STAR_ALIGN_VIRUS.out.bam,
+    )
+
+    input_for_coverage = BAMFILTERPOLYX.out.sequence_trace
+        .map{ meta, bam ->
+            [meta, bam, []]   // No index needed
+            }
+    SAMTOOLS_COVERAGE(
+        input_for_coverage,
+        [[:], []], // No reference FASTA
+        [[:], []],   // No FAI index
+    )
+
+    MKSUMMARYVIRUSCOUNT(
+        STAR_ALIGN_HUMAN.out.log_final,   // STAR log from human mapping
+        SAMTOOLS_COVERAGE.out.coverage     // Coverage from virus mapping
+    )
 
 
     //

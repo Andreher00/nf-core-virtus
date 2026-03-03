@@ -41,6 +41,7 @@ process KZFILTER {
     // TODO nf-core: If multiple software packages are used in this module, all MUST be added here
     //               by copying the line below and replacing the current tool with the extra tool(s)
     tuple val("${task.process}"), val('kz'), eval("kz --version | sed '1!d; s/komplexity v//'"), topic: versions, emit: versions_kz
+    tuple val("${task.process}"), val('gzip'), eval("gzip --version | sed '1!d; s/gzip //'"), topic: versions, emit: versions_gzip
 
     when:
     task.ext.when == null || task.ext.when
@@ -58,7 +59,7 @@ process KZFILTER {
     // TODO nf-core: Please replace the example samtools command below with your module's command
     // TODO nf-core: Please indent the command appropriately (4 spaces!!) to help with readability ;)
     """
-    cat $input_fq \\
+    zcat $input_fq \\
         | kz --filter $args \\
         | gzip > ${prefix}.fq.gz
     """
