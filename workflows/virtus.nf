@@ -179,7 +179,7 @@ workflow VIRTUS {
 
     // KZ FILTER SE READS
     KZFILTER_SE(
-        SAMTOOLS_FASTQ.out.singleton
+        SAMTOOLS_FASTQ.out.other    // reads with no READ1 or READ2 flags set
     )
 
     // Format SE channel correctly for remixing
@@ -190,6 +190,7 @@ workflow VIRTUS {
     ch_fastq_for_star_virus = channel.empty()
         .mix(FASTQPAIR.out.reads)
         .mix(ch_se_filtered)
+
 
     // STAR MAPPING TO VIRUS
     STAR_ALIGN_VIRUS(
