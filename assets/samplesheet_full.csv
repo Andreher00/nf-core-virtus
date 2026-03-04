@@ -1,0 +1,5 @@
+sample,fastq_1,fastq_2,group
+Flu1,assets/full_example/SRR9856912_1.fastq.gz,assets/full_example/SRR9856912_2.fastq.gz,H3N2
+Flu2,assets/full_example/SRR9856913_1.fastq.gz,assets/full_example/SRR9856913_2.fastq.gz,H3N2
+Ctrl1,assets/full_example/SRR9856914_1.fastq.gz,assets/full_example/SRR9856914_2.fastq.gz,Mock
+Ctrl2,assets/full_example/SRR9856915_1.fastq.gz,assets/full_example/SRR9856915_2.fastq.gz,Mock

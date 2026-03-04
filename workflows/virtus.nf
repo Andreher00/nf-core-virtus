@@ -12,19 +12,20 @@ include { methodsDescriptionText  } from '../subworkflows/local/utils_nfcore_vir
 
 include { STAR_GENOMEGENERATE as STAR_GENOMEGENERATE_HUMAN } from '../modules/nf-core/star/genomegenerate/main'
 include { STAR_GENOMEGENERATE as STAR_GENOMEGENERATE_VIRUS } from '../modules/nf-core/star/genomegenerate/main'
-include { SAMTOOLS_VIEW           } from '../modules/nf-core/samtools/view/main'
-include { FASTP                   } from '../modules/nf-core/fastp/main'
-include { STAR_ALIGN as STAR_ALIGN_HUMAN } from '../modules/nf-core/star/align/main'
-include { STAR_ALIGN as STAR_ALIGN_VIRUS } from '../modules/nf-core/star/align/main'
-include { SALMON_QUANT            } from '../modules/nf-core/salmon/quant/main'
-include { SAMTOOLS_COLLATEFASTQ   } from '../modules/nf-core/samtools/collatefastq/main'
-include { SAMTOOLS_FASTQ          } from '../modules/nf-core/samtools/fastq/main'
-include { BAMFILTERPOLYX          } from '../modules/local/bamfilterpolyx/main'
-include { KZFILTER as KZFILTER_SE } from '../modules/local/kzfilter/main'
-include { KZFILTER as KZFILTER_PE } from '../modules/local/kzfilter/main'
-include { FASTQPAIR              } from '../modules/local/fastqpair/main'
-include { SAMTOOLS_COVERAGE       } from '../modules/nf-core/samtools/coverage/main'
-include { MKSUMMARYVIRUSCOUNT     } from '../modules/local/mksummaryviruscount/main'
+include { SAMTOOLS_VIEW                                    } from '../modules/nf-core/samtools/view/main'
+include { FASTP                                            } from '../modules/nf-core/fastp/main'
+include { STAR_ALIGN as STAR_ALIGN_HUMAN                   } from '../modules/nf-core/star/align/main'
+include { STAR_ALIGN as STAR_ALIGN_VIRUS                   } from '../modules/nf-core/star/align/main'
+include { SALMON_QUANT                                     } from '../modules/nf-core/salmon/quant/main'
+include { SAMTOOLS_COLLATEFASTQ                            } from '../modules/nf-core/samtools/collatefastq/main'
+include { SAMTOOLS_FASTQ                                   } from '../modules/nf-core/samtools/fastq/main'
+include { BAMFILTERPOLYX                                   } from '../modules/local/bamfilterpolyx/main'
+include { KZFILTER as KZFILTER_SE                          } from '../modules/local/kzfilter/main'
+include { KZFILTER as KZFILTER_PE                          } from '../modules/local/kzfilter/main'
+include { FASTQPAIR                                        } from '../modules/local/fastqpair/main'
+include { SAMTOOLS_COVERAGE                                } from '../modules/nf-core/samtools/coverage/main'
+include { MKSUMMARYVIRUSCOUNT                              } from '../modules/local/mksummaryviruscount/main'
+include { MKSUMMARYSTATS                                   } from '../modules/local/mksummarystats/main'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
@@ -221,6 +222,17 @@ workflow VIRTUS {
     MKSUMMARYVIRUSCOUNT(
         STAR_ALIGN_HUMAN.out.log_final,   // STAR log from human mapping
         SAMTOOLS_COVERAGE.out.coverage     // Coverage from virus mapping
+    )
+
+    ch_virtus_results = MKSUMMARYVIRUSCOUNT.out.output_tsv
+        .map { _meta, tsv -> tsv }
+        .collect()
+        .map { tsvs -> [ [ id: 'summary'], tsvs ] }
+
+    // Run summary
+    MKSUMMARYSTATS(
+        ch_virtus_results,
+        file(params.input)
     )
 
 
