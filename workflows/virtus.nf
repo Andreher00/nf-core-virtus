@@ -91,7 +91,7 @@ workflow VIRTUS {
     FASTQC (
         ch_samplesheet
     )
-    ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{item -> item[1]})
+    ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{ tuple -> tuple[1] })
     ch_versions = ch_versions.mix(FASTQC.out.versions.first())
 
     // FASTP expects a tuple with adapter FASTAs
@@ -105,7 +105,7 @@ workflow VIRTUS {
         false,       // save_trimmed_fail
         false        // save merged
     )
-    ch_multiqc_files = ch_multiqc_files.mix(FASTP.out.log.collect{item -> item[1]})
+    ch_multiqc_files = ch_multiqc_files.mix(FASTP.out.log.collect{ tuple -> tuple[1] })
 
     // STAR MAPPING TO HUMAN
     STAR_ALIGN_HUMAN (
@@ -116,7 +116,7 @@ workflow VIRTUS {
         params.seq_platform, 
         params.seq_center
     )
-    ch_multiqc_files = ch_multiqc_files.mix(STAR_ALIGN_HUMAN.out.log_final.collect{item -> item[1]})
+    ch_multiqc_files = ch_multiqc_files.mix(STAR_ALIGN_HUMAN.out.log_final.collect{ tuple -> tuple[1] })
     ch_versions = ch_versions.mix(STAR_ALIGN_HUMAN.out.versions.first())
     
     STAR_ALIGN_HUMAN.out.bam_sorted.view()
@@ -172,7 +172,7 @@ workflow VIRTUS {
     // Rejoin PE reads
     ch_pe_filtered = KZFILTER_PE.out.output_fq
         .groupTuple(size: 2)
-        .map { meta, reads -> [meta, reads.sort()] }
+        .map { meta, reads -> [meta, reads.sort { file -> file.name }] }
 
     FASTQPAIR(
         ch_pe_filtered
@@ -202,7 +202,7 @@ workflow VIRTUS {
         params.seq_platform,
         params.seq_center
     )
-    ch_multiqc_files = ch_multiqc_files.mix(STAR_ALIGN_VIRUS.out.log_final.collect{item -> item[1]})
+    ch_multiqc_files = ch_multiqc_files.mix(STAR_ALIGN_VIRUS.out.log_final.collect{ tuple -> tuple[1] })
     ch_versions = ch_versions.mix(STAR_ALIGN_VIRUS.out.versions.first())
 
     BAMFILTERPOLYX(
