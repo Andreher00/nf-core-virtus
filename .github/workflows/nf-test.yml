@@ -1,13 +1,12 @@
 name: Run nf-test
 on:
-# Disabled for fork - requires self-hosted runners
-  # pull_request:
-  #   paths-ignore:
-  #     - "docs/**"
-  #     - "**/meta.yml"
-  #     - "**/*.md"
-  #     - "**/*.png"
-  #     - "**/*.svg"
+  pull_request:
+    paths-ignore:
+      - "docs/**"
+      - "**/meta.yml"
+      - "**/*.md"
+      - "**/*.png"
+      - "**/*.svg"
   release:
     types: [published]
   workflow_dispatch:
