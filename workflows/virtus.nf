@@ -172,7 +172,7 @@ workflow VIRTUS {
     // Rejoin PE reads
     ch_pe_filtered = KZFILTER_PE.out.output_fq
         .groupTuple(size: 2)
-        .map { meta, reads -> [meta, reads.sort { read -> read.name }]}
+        .map { meta, reads -> [meta, reads.sort()] }
 
     FASTQPAIR(
         ch_pe_filtered
