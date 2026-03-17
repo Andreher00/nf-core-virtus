@@ -13,6 +13,17 @@ The directories listed below will be created in the results directory after the 
 The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes data using the following steps:
 
 - [FastQC](#fastqc) - Raw read QC
+- [fastp](#fastp) - Read trimming
+- [STAR human](#star_human) - Read alignment to human genome
+- [samtools view](#samtools_view) - Extraction of unmmapped reads
+- [samtools fastq/collatefastq](#samtools_fastq) - Conversion of BAM to FASTQ
+- [komplexity](#kz) - Read complexity filtering
+- [fastq-pair](#fastqpair) - Removal of unpaired reads (only for PE data)
+- [STAR virus](#star_virus) - Read alignment to viral genomes
+- [BAM_filter_polyX](#bamfilterpolyx) - Removal of polyA containing reads
+- [samtools coverage](#samtools_coverage) - Calculation of viral coverage
+- [mksummaryviruscount](#mksummaryviruscount) - Coverage stats reporting for viral hits
+- [mksummarystats](#mksummarystats) - Group comparison statistical testing and scattermap
 - [MultiQC](#multiqc) - Aggregate report describing results and QC from the whole pipeline
 - [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
 
@@ -28,6 +39,20 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 </details>
 
 [FastQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/) gives general quality metrics about your sequenced reads. It provides information about the quality score distribution across your reads, per base sequence content (%A/T/G/C), adapter contamination and overrepresented sequences. For further reading and documentation see the [FastQC help pages](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/).
+
+### fastp
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `fastp/`
+  - `*_fastqp.fastq.gz`: FASTQ file of trimmed reads
+
+
+</details>
+
+[fastp](https://github.com/OpenGene/fastp) is an ultra-fast, all-in-one FASTQ preprocessor that performs quality control, adapter trimming, and read filtering in a single pass.
+
 
 ### MultiQC
 
