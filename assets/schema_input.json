@@ -29,9 +29,10 @@
             },
             "group": {
                 "type": "string",
-                "pattern": "^\\S+$"
+                "pattern": "^\\S+$",
+                "meta": ["group"]
             }
         },
-        "required": ["sample", "fastq_1"]
+        "required": ["sample", "fastq_1", "group"]
     }
 }

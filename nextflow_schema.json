@@ -253,5 +253,37 @@
         {
             "$ref": "#/$defs/generic_options"
         }
-    ]
+    ],
+    "properties": {
+        "adapter_fasta": {
+            "type": "string",
+            "default": "[]",
+            "description": "FASTA file containing custom adapters for FASTP trimming"
+        },
+        "gtf": {
+            "type": "string",
+            "default": "[]",
+            "description": "Optional GTF file for human alignment"
+        },
+        "star_index_human": {
+            "type": "string",
+            "default": "[]",
+            "description": "Path to pre-computed STAR human index"
+        },
+        "star_index_virus": {
+            "type": "string",
+            "default": "[]",
+            "description": "Path to pre-computed STAR virus index"
+        },
+        "star_ignore_sjdbgtf": {
+            "type": "boolean",
+            "default": true
+        },
+        "seq_platform": {
+            "type": "string"
+        },
+        "seq_center": {
+            "type": "string"
+        }
+    }
 }
