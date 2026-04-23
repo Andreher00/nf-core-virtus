@@ -97,8 +97,9 @@ workflow VIRTUS {
     // FASTP expects a tuple with adapter FASTAs
     ch_fastp_input = ch_samplesheet
         .map { meta, reads -> 
-            return [ meta, reads, params.adapter_fasta] 
+            return [ meta, reads, params.adapter_fasta ? file(params.adapter_fasta) : [] ] 
         }
+
     FASTP (
         ch_fastp_input,
         false,       // discard_trimmed_reads
